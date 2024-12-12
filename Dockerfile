@@ -1,37 +1,23 @@
-# nodejs-app/Dockerfile
-
-# Stage 1: Build the Next.js app
-FROM node:18-alpine AS builder
+# Use Node.js as the base image
+FROM node:18.17.0-alpine
 
 # Set working directory
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the rest of the application files
 COPY . .
 
 # Build the Next.js app
 RUN npm run build
 
-# Stage 2: Serve the Next.js app
-FROM node:18-alpine
-
-# Set working directory
-WORKDIR /app
-
-# Copy the built app from the builder stage
-COPY --from=builder /app ./
-
-# Install only production dependencies
-RUN npm install --production
-
-# Expose the application port
+# Expose the port the app runs on
 EXPOSE 3000
 
-# Define the default command
+# Start the Next.js app
 CMD ["npm", "start"]

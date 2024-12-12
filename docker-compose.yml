@@ -25,6 +25,22 @@ services:
       "--collation-server=utf8mb4_unicode_ci"
     ]
 
+  nextjs:
+    build:
+      context: . # Path to the Next.js app directory
+    ports:
+      - "3000:3000" # Map Next.js app to port 3000
+    environment:
+      DATABASE_URL: mysql://admin:admin@mysql:3306/default_db # Environment variable for database connection
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api # Example for public API URL
+    volumes:
+      - .:/app # Mount the application code for hot-reloading
+      - /app/node_modules # Persist node_modules inside the container
+    networks:
+      - my_network
+    depends_on:
+      - mysql
+
 volumes:
   db:
 
